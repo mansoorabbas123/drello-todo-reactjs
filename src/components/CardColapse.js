@@ -1,11 +1,18 @@
 import React from "react";
-toggleCard;
-toggle;
-todo;
+import DateTimePicker from "react-datetime-picker";
 
-const CardColapse = ({ toggle }) => {
+const CardColapse = ({
+  card,
+  toggleCard,
+  toggle,
+  todo,
+  updateTodo,
+  todoAddHandler,
+  date,
+  updateDate,
+}) => {
   return (
-    <div className={toggleCard === el.id ? "block" : "hidden"}>
+    <div className={toggleCard === card.id ? "block" : "hidden"}>
       <div>
         <label
           htmlFor=""
@@ -17,7 +24,7 @@ const CardColapse = ({ toggle }) => {
           name=""
           id=""
           className="my-3 block border-solid border-2 w-full"
-          onChange={(e) => setTodo(e.target.value)}
+          onChange={(e) => updateTodo(e.target.value)}
           value={todo}
         />
       </div>
@@ -29,7 +36,10 @@ const CardColapse = ({ toggle }) => {
           Task Due Date
         </label>
         <div className="text-center">
-          <DateTimePicker onChange={onChange} value={value} />
+          <DateTimePicker
+            onChange={(value) => updateDate(value)}
+            value={date}
+          />
         </div>
       </div>
       <div>

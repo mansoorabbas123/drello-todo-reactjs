@@ -1,42 +1,60 @@
 import React, { useState } from "react";
-import DateTimePicker from "react-datetime-picker";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Droppable } from "react-beautiful-dnd";
+import CardColapse from "./CardColapse";
 
 const Main = () => {
-  const [value, onChange] = useState(new Date());
+  const [date, setDate] = useState(new Date());
   const [toggleCard, setToggleCard] = useState(null);
   const [todo, setTodo] = useState("Enter Task Details...");
-  const [todos, setTodos] = useState([
-    {
-      id: 11,
-      desc: "grocery",
-    },
-    {
-      id: 12,
-      desc: "meeting",
-    },
-    {
-      id: 13,
-      desc: "shopping",
-    },
-  ]);
+  // const [todos, setTodos] = useState([
+  //   {
+  //     id: 11,
+  //     desc: "grocery",
+  //   },
+  //   {
+  //     id: 12,
+  //     desc: "meeting",
+  //   },
+  //   {
+  //     id: 13,
+  //     desc: "shopping",
+  //   },
+  // ]);
 
   const data = [
     {
       id: 1,
       title: "Todo",
-      todos: ["test1"],
+      todos: [
+        {
+          id: 31,
+          text: "test 1",
+          dueDate: new Date(),
+        },
+      ],
     },
     {
       id: 2,
       title: "Doing",
-      todos: ["test2"],
+      todos: [
+        {
+          id: 32,
+          text: "test 2",
+          dueDate: new Date(),
+        },
+      ],
     },
     {
       id: 3,
       title: "Done",
-      todos: ["test3"],
+      todos: [
+        {
+          id: 33,
+          text: "test 3",
+          dueDate: new Date(),
+        },
+      ],
     },
   ];
 
@@ -44,72 +62,58 @@ const Main = () => {
     setToggleCard(id);
   };
 
+  const updateTodo = (value) => {
+    setTodo(value);
+  };
+
   const todoAddHandler = (e) => {
     e.preventDefault();
     console.log(todo);
   };
 
+  const updateDate = (value) => {
+    console.log("====================================");
+    console.log(value);
+    console.log("====================================");
+  };
+
   return (
     <main className="p-5 flex justify-start items-start flex-wrap">
       {/* each card  */}
-      {data.map((el) => {
+      {data.map((card) => {
         return (
-          <div className="p-3 bg-white rounded w-80 m-3 " key={el.id}>
+          <div
+            className="p-3 bg-white rounded w-80 m-3 bg-slate-300"
+            key={card.id}
+          >
             <div>
-              <h4>{el.title}</h4>
+              <h4>{card.title}</h4>
             </div>
-            {el.todos.map((todo) => (
-              <p>{todo}</p>
-            ))}
+            <div className="p-2 rounded mt-1 bg-white">
+              {card.todos.map((todo) => (
+                <p key={todo.id}>{todo.text}</p>
+              ))}
+            </div>
             <button
               className={
-                toggleCard === el.id
+                toggleCard === card.id
                   ? "hidden"
                   : "block w-full hover:bg-cyan-100 text-left mt-10 p-2 rounded-md"
               }
-              onClick={() => toggle(el.id)}
+              onClick={() => toggle(card.id)}
             >
               +Add a New Card
             </button>
-            <div className={toggleCard === el.id ? "block" : "hidden"}>
-              <div>
-                <label
-                  htmlFor=""
-                  className="bg-zinc-900 text-white p-1 rounded-lg mt-5 inline-block"
-                >
-                  Task Text
-                </label>
-                <textarea
-                  name=""
-                  id=""
-                  className="my-3 block border-solid border-2 w-full"
-                  onChange={(e) => setTodo(e.target.value)}
-                  value={todo}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor=""
-                  className="bg-zinc-900 text-white p-1 rounded-lg mb-4 inline-block"
-                >
-                  Task Due Date
-                </label>
-                <div className="text-center">
-                  <DateTimePicker onChange={onChange} value={value} />
-                </div>
-              </div>
-              <div>
-                <button
-                  className="my-3 bg-teal-800 text-white p-2 rounded-lg"
-                  onClick={todoAddHandler}
-                >
-                  Add Card
-                </button>
-                <a onClick={() => toggle(null)} className="ml-3 cursor-pointer">
-                  X
-                </a>
-              </div>
-            </div>
+            <CardColapse
+              toggleCard={toggleCard}
+              toggle={toggle}
+              todo={todo}
+              updateTodo={updateTodo}
+              todoAddHandler={todoAddHandler}
+              date={date}
+              updateDate={updateDate}
+              card={card}
+            />
           </div>
         );
       })}
