@@ -1,27 +1,52 @@
 import React, { useState } from "react";
 import DateTimePicker from "react-datetime-picker";
+import { DragDropContext } from "react-beautiful-dnd";
+import { Droppable } from "react-beautiful-dnd";
 
 const Main = () => {
   const [value, onChange] = useState(new Date());
   const [toggleCard, setToggleCard] = useState(null);
+  const [todo, setTodo] = useState("Enter Task Details...");
+  const [todos, setTodos] = useState([
+    {
+      id: 11,
+      desc: "grocery",
+    },
+    {
+      id: 12,
+      desc: "meeting",
+    },
+    {
+      id: 13,
+      desc: "shopping",
+    },
+  ]);
 
   const data = [
     {
       id: 1,
       title: "Todo",
+      todos: ["test1"],
     },
     {
       id: 2,
       title: "Doing",
+      todos: ["test2"],
     },
     {
       id: 3,
       title: "Done",
+      todos: ["test3"],
     },
   ];
 
   const toggle = (id) => {
     setToggleCard(id);
+  };
+
+  const todoAddHandler = (e) => {
+    e.preventDefault();
+    console.log(todo);
   };
 
   return (
@@ -33,6 +58,9 @@ const Main = () => {
             <div>
               <h4>{el.title}</h4>
             </div>
+            {el.todos.map((todo) => (
+              <p>{todo}</p>
+            ))}
             <button
               className={
                 toggleCard === el.id
@@ -55,7 +83,8 @@ const Main = () => {
                   name=""
                   id=""
                   className="my-3 block border-solid border-2 w-full"
-                  value=" Enter Task Details ..."
+                  onChange={(e) => setTodo(e.target.value)}
+                  value={todo}
                 />
               </div>
               <div>
@@ -70,7 +99,10 @@ const Main = () => {
                 </div>
               </div>
               <div>
-                <button className="my-3 bg-teal-800 text-white p-2 rounded-lg">
+                <button
+                  className="my-3 bg-teal-800 text-white p-2 rounded-lg"
+                  onClick={todoAddHandler}
+                >
                   Add Card
                 </button>
                 <a onClick={() => toggle(null)} className="ml-3 cursor-pointer">

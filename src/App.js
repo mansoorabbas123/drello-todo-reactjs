@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import Main from "./components/Main";
+import { DragDropContext } from "react-beautiful-dnd";
 
 export default function App() {
   return (
