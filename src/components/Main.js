@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Draggable } from "react-beautiful-dnd";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Droppable } from "react-beautiful-dnd";
 import CardColapse from "./CardColapse";
@@ -77,6 +78,12 @@ const Main = () => {
     console.log("====================================");
   };
 
+  const handleOnDragEnd = (value) => {
+    console.log("====================================");
+    console.log(value);
+    console.log("====================================");
+  };
+
   return (
     <main className="p-5 flex justify-start items-start flex-wrap">
       {/* each card  */}
@@ -89,11 +96,33 @@ const Main = () => {
             <div>
               <h4>{card.title}</h4>
             </div>
-            <div className="p-2 rounded mt-1 bg-white">
-              {card.todos.map((todo) => (
-                <p key={todo.id}>{todo.text}</p>
-              ))}
-            </div>
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+              <Droppable droppableId={card.title}>
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {card.todos.map((todo, index) => (
+                      <Draggable
+                        draggableId={todo.id.toString()}
+                        key={todo.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            className="p-2 rounded mt-1 bg-white"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            {todo.text}
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
             <button
               className={
                 toggleCard === card.id
