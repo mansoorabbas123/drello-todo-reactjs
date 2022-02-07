@@ -2,62 +2,30 @@ import React, { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Droppable } from "react-beautiful-dnd";
+import Card from "./Card";
 import CardColapse from "./CardColapse";
 
 const Main = () => {
   const [date, setDate] = useState(new Date());
   const [toggleCard, setToggleCard] = useState(null);
   const [todo, setTodo] = useState("Enter Task Details...");
-  // const [todos, setTodos] = useState([
-  //   {
-  //     id: 11,
-  //     desc: "grocery",
-  //   },
-  //   {
-  //     id: 12,
-  //     desc: "meeting",
-  //   },
-  //   {
-  //     id: 13,
-  //     desc: "shopping",
-  //   },
-  // ]);
 
-  const data = [
-    {
-      id: 1,
-      title: "Todo",
-      todos: [
-        {
-          id: 31,
-          text: "test 1",
-          dueDate: new Date(),
-        },
-      ],
+  const initialColumns = {
+    todo: {
+      id: "todo",
+      list: ["test 1", "test 2", "test 3"],
     },
-    {
-      id: 2,
-      title: "Doing",
-      todos: [
-        {
-          id: 32,
-          text: "test 2",
-          dueDate: new Date(),
-        },
-      ],
+    doing: {
+      id: "doing",
+      list: [],
     },
-    {
-      id: 3,
-      title: "Done",
-      todos: [
-        {
-          id: 33,
-          text: "test 3",
-          dueDate: new Date(),
-        },
-      ],
+    done: {
+      id: "done",
+      list: [],
     },
-  ];
+  };
+
+  const [columns, setColumns] = useState(initialColumns);
 
   const toggle = (id) => {
     setToggleCard(id);
@@ -78,75 +46,96 @@ const Main = () => {
     console.log("====================================");
   };
 
-  const handleOnDragEnd = (value) => {
-    console.log("====================================");
-    console.log(value);
-    console.log("====================================");
+  const handleOnDragEnd = ({ source, destination }: DropResult) => {
+    // Make sure we have a valid destination
+    if (destination === undefined || destination === null) return null;
+
+    console.log("Source --->", source);
+    // Make sure we're actually moving the item
+    if (
+      source.droppableId === destination.droppableId &&
+      destination.index === source.index
+    )
+      return null;
+
+    // Set start and end variables
+    const start = columns[source.droppableId];
+    const end = columns[destination.droppableId];
+
+    // If start is the same as end, we're in the same column
+    if (start === end) {
+      // Move the item within the list
+      // Start by making a new list without the dragged item
+      const newList = start.list.filter(
+        (_: any, idx: number) => idx !== source.index
+      );
+
+      // Then insert the item at the right location
+      newList.splice(destination.index, 0, start.list[source.index]);
+
+      // Then create a new copy of the column object
+      const newCol = {
+        id: start.id,
+        list: newList,
+      };
+
+      // Update the state
+      setColumns((state) => ({ ...state, [newCol.id]: newCol }));
+      return null;
+    } else {
+      // If start is different from end, we need to update multiple columns
+      // Filter the start list like before
+      const newStartList = start.list.filter(
+        (_: any, idx: number) => idx !== source.index
+      );
+
+      // Create a new start column
+      const newStartCol = {
+        id: start.id,
+        list: newStartList,
+      };
+
+      // Make a new end list array
+      const newEndList = end.list;
+
+      // Insert the item into the end list
+      newEndList.splice(destination.index, 0, start.list[source.index]);
+
+      // Create a new end column
+      const newEndCol = {
+        id: end.id,
+        list: newEndList,
+      };
+
+      // Update the state
+      setColumns((state) => ({
+        ...state,
+        [newStartCol.id]: newStartCol,
+        [newEndCol.id]: newEndCol,
+      }));
+      return null;
+    }
   };
 
   return (
-    <main className="p-5 flex justify-start items-start flex-wrap">
-      {/* each card  */}
-      {data.map((card) => {
-        return (
-          <div
-            className="p-3 bg-white rounded w-80 m-3 bg-slate-300"
-            key={card.id}
-          >
-            <div>
-              <h4>{card.title}</h4>
-            </div>
-            <DragDropContext onDragEnd={handleOnDragEnd}>
-              <Droppable droppableId={card.title}>
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {card.todos.map((todo, index) => (
-                      <Draggable
-                        draggableId={todo.id.toString()}
-                        key={todo.id}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            className="p-2 rounded mt-1 bg-white"
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            {todo.text}
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-            <button
-              className={
-                toggleCard === card.id
-                  ? "hidden"
-                  : "block w-full hover:bg-cyan-100 text-left mt-10 p-2 rounded-md"
-              }
-              onClick={() => toggle(card.id)}
-            >
-              +Add a New Card
-            </button>
-            <CardColapse
-              toggleCard={toggleCard}
-              toggle={toggle}
-              todo={todo}
-              updateTodo={updateTodo}
-              todoAddHandler={todoAddHandler}
-              date={date}
-              updateDate={updateDate}
-              card={card}
-            />
-          </div>
-        );
-      })}
-    </main>
+    <DragDropContext onDragEnd={handleOnDragEnd}>
+      <main className="p-5 flex justify-start items-start flex-wrap">
+        {/* each card  */}
+        {Object.values(columns).map((col) => (
+          <Card
+            col={col}
+            toggleCard={toggleCard}
+            toggle={toggle}
+            todo={todo}
+            updateTodo={updateTodo}
+            todoAddHandler={todoAddHandler}
+            date={date}
+            updateDate={updateDate}
+            key={col.id}
+          />
+        ))}
+      </main>
+    </DragDropContext>
   );
 };
 

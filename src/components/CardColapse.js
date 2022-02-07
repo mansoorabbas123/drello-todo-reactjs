@@ -2,7 +2,7 @@ import React from "react";
 import DateTimePicker from "react-datetime-picker";
 
 const CardColapse = ({
-  card,
+  ID,
   toggleCard,
   toggle,
   todo,
@@ -12,7 +12,7 @@ const CardColapse = ({
   updateDate,
 }) => {
   return (
-    <div className={toggleCard === card.id ? "block" : "hidden"}>
+    <div className={toggleCard === ID ? "block" : "hidden"}>
       <div>
         <label
           htmlFor=""
