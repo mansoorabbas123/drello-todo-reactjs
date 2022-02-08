@@ -1,24 +1,24 @@
 import React from "react";
 import DateTimePicker from "react-datetime-picker";
 
-const CardColapse = ({
+const EditColapse = ({
   ID,
-  toggleCard,
-  toggle,
+  editToggle,
+  updateEditToggle,
   todo,
   updateTodo,
-  todoAddHandler,
   date,
   updateDate,
+  editTodo,
 }) => {
   return (
-    <div className={toggleCard === ID ? "block" : "hidden"}>
+    <div className={editToggle === ID ? "block" : "hidden"}>
       <div>
         <label
           htmlFor=""
           className="bg-zinc-900 text-white p-1 rounded-lg mt-5 inline-block"
         >
-          Task Text
+          Current Task Text
         </label>
         <textarea
           name=""
@@ -46,11 +46,14 @@ const CardColapse = ({
       <div>
         <button
           className="my-3 bg-teal-800 text-white p-2 rounded-lg"
-          onClick={(e) => todoAddHandler(e, ID)}
+          onClick={(e) => editTodo(e, ID)}
         >
-          Add Card
+          Save
         </button>
-        <a onClick={() => toggle(null)} className="ml-3 cursor-pointer">
+        <a
+          onClick={() => updateEditToggle(null)}
+          className="ml-3 cursor-pointer"
+        >
           X
         </a>
       </div>
@@ -58,4 +61,4 @@ const CardColapse = ({
   );
 };
 
-export default CardColapse;
+export default EditColapse;

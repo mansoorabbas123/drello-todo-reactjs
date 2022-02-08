@@ -1,0 +1,7 @@
+.default-hidden {
+  display: hidden;
+}
+
+.default-hidden:hover {
+  display: block;
+}

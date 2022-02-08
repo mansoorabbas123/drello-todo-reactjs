@@ -21,7 +21,7 @@ const Header = () => {
       </div>
       <div className="flex justify-between lg:text-xl md:text-md mt-5">
         <p className="bg-slate-700 ml-5 p-2">Your Drello Board</p>
-        <p className="bg-slate-700 mr-5 p-2">---Change Background</p>
+        {/* <p className="bg-slate-700 mr-5 p-2">---Change Background</p> */}
       </div>
     </header>
   );
